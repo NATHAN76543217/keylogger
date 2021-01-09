@@ -1,0 +1,5 @@
++ clang -Wall -Werror -Wextra -Iincludes -c srcs/keylogger.c -o objs/keylogger.o
++ clang -Wall -Werror -Wextra -Iincludes -c srcs/keymap.c -o objs/keymap.o
++ clang -Wall -Werror -Wextra -Iincludes -c srcs/utils.c -o objs/utils.o
++ clang -Wall -Werror -Wextra -Iincludes -c srcs/mod.c -o objs/mod.o
++ clang -Wall -Werror -Wextra -Iincludes -o keylogger objs/keylogger.o objs/keymap.o objs/utils.o objs/mod.o
