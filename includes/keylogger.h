@@ -31,6 +31,7 @@ typedef struct	s_keylogger
     struct input_event	event;
 	char				*keymap[257][8];
 	int					saveFD;
+	int					saveLineFD;
 	int					keyboardFD;
 	t_mod				mod;
 
