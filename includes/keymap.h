@@ -9,6 +9,7 @@
 # define CTRL_L 0x25 - XOFFSET
 # define CTRL_R 0x69 - XOFFSET
 # define ALT_L 0x40 - XOFFSET
+# define ALT_R 0x6C - XOFFSET
 # define ALT_META 0xcd - XOFFSET
 # define NUM_LOCK 0x4d - XOFFSET
 # define SUPER_L 0x85 - XOFFSET

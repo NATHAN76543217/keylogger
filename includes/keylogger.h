@@ -23,6 +23,7 @@ typedef struct	s_mod
 	int	ctrl;
 	int	numlock;
 	int	capslock;
+	int mod;
 }				t_mod;
 typedef struct	s_keylogger
 {
