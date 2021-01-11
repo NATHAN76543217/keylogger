@@ -63,12 +63,12 @@ int main(int ac, char **av)
 		dprintf(STDOUT_FILENO, "open file failed\n");
 		return 0;
 	}
-	if((klg->saveFD = open("save.log", O_RDWR | O_CREAT | O_APPEND, 0666)) <= 0)
+	if((klg->saveFD = open("logs/save.log", O_RDWR | O_CREAT | O_APPEND, 0666)) <= 0)
 	{
 		dprintf(STDOUT_FILENO, "open save file failed\n");
 		return 0;
 	}
-	if((klg->saveLineFD = open("save_line.log", O_RDWR | O_CREAT | O_APPEND, 0666)) <= 0)
+	if((klg->saveLineFD = open("logs/save_line.log", O_RDWR | O_CREAT | O_APPEND, 0666)) <= 0)
 	{
 		dprintf(STDOUT_FILENO, "open save file failed\n");
 		return 0;

