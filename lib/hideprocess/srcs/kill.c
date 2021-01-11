@@ -35,8 +35,8 @@ int	kill(pid_t pid, int sig)											\
 				to_exclude = -1;										\
 		}																\
 	}																	\
-	if (pid == to_exclude)												\
-		return -1;														\
+	/* if (pid == to_exclude)												\
+		return -1;	*/													\
 	ret = original_##kill(pid, sig);									\
 	return ret;															\
 }

