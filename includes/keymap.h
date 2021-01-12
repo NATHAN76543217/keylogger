@@ -2,6 +2,7 @@
 # define KEYMAP_H
 
 #include "keylogger.h"
+
 # define XOFFSET 8
 # define SHIFT_L 0x32 - XOFFSET
 # define SHIFT_R 0x3e - XOFFSET
@@ -14,8 +15,7 @@
 # define NUM_LOCK 0x4d - XOFFSET
 # define SUPER_L 0x85 - XOFFSET
 
-int     setKeyMap(t_keylogger* klg, char *s);
-void    printKeyMap(t_keylogger *klg);
+int     setKeyMap(t_keylogger* klg);
 int		is_mod_key(t_keylogger *klg);
 
 

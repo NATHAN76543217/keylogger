@@ -34,11 +34,9 @@ static int	splitKey(t_keylogger *klg, int line, char *keys)
 			return ERROR;
 		i++;
 	}
-	//dprintf(1, "code: %d key: 1|%8.8s| 2|%8.8s| %s %s %s %s %s 8|%s|\n", (int)klg->event.code, klg->keymap[line][0], klg->keymap[line][1], klg->keymap[line][2],klg->keymap[line][3],klg->keymap[line][4], klg->keymap[line][5], klg->keymap[line][6], klg->keymap[line][7]);
-
 	return SUCCESS;
 }
-int		setKeyMap(t_keylogger* klg, char *s)
+int		setKeyMap(t_keylogger* klg)
 {
 	int     i;
 	int     line;
@@ -47,12 +45,12 @@ int		setKeyMap(t_keylogger* klg, char *s)
 
 	line = 0;
 	i = 0;
-	while (s[i] != '\0')
+	while (klg->rawMap[i] != '\0')
 	{
-		ndx = lentochar(&(s[i]), '|');
+		ndx = lentochar(&(klg->rawMap[i]), '|');
 		if ((tmp = malloc(sizeof(char) * ndx)) == NULL)
 			return ERROR;
-		ft_strncpy(tmp, &s[i], ndx);
+		ft_strncpy(tmp, &(klg->rawMap[i]), ndx);
 		if (splitKey(klg, line, tmp) == ERROR)
 			return ERROR;
 		i += ndx + 1;
@@ -60,25 +58,4 @@ int		setKeyMap(t_keylogger* klg, char *s)
 		free(tmp);
 	}
 	return SUCCESS;
-}
-
-void	printKeyMap(t_keylogger *klg)
-{
-	int i;
-	int x;
-
-
-	i = 0;
-	x = 0;
-	while (i < 256)
-	{
-		while (x < 8)
-		{
-			ft_putstr(klg->keymap[i][x]);
-			x++;
-		}
-		ft_putchar('\n');
-		i++;
-	}
-	return ;
 }

