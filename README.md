@@ -1,10 +1,14 @@
 # keylogger
 A linux keylogger srcipt
 
-This scipts is in two part:
+This scipts is in three part:
 - C scripts for keyloggin
 - Bash scripts for keylogger implentation in system
+- A shared library for overwritting libc
 
+## Makefile
+make all: compile program
+make debug: compile program in not furtive mode
 ## Detections scripts
 	detect2.sh is a bash script thats test 'kill' on every pid to detect hidden process
 ## procsHides.so
@@ -14,8 +18,7 @@ This scipts is in two part:
 ## Asking permission
 	first program display popup for requiring password
 ## Persistance
-	(Comming soon)
-	Next, program install keylogger in filesystem for persist after reboot and auto-run at lunch.
+	Once init.sh was run, keylogger is implemented in filesystem as service. Its start automatically on boot.
 ## Read keyboards input
 	Then, program select and read eventX file for get keyboard stream.
 ## Display

