@@ -1,10 +1,10 @@
 # keylogger
-A linux keylogger srcipt
+A linux keylogger script
 
-This scipts is in three part:
-- C scripts for keyloggin
+This scipts composed of three parts:
+- C scripts for keylog
 - Bash scripts for keylogger implentation in system
-- A shared library for overwritting libc
+- A shared library to hide process by overwritting libc
 
 ## Makefile
 make all: compile program
